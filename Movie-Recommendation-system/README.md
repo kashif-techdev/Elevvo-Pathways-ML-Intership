@@ -205,6 +205,7 @@ streamlit run app.py
 
 2. **Interactive Demo**: Open http://localhost:8501 in your browser
 3. **Screen shots**:
+   <br>
     ===>(Home Screen)<===
    <img width="1920" height="902" alt="image" src="https://github.com/user-attachments/assets/a19a167f-2f74-420b-b5d9-03f70ade7a9c" />
    <br>
