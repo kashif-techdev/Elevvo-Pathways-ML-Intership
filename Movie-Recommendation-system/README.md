@@ -210,7 +210,28 @@ streamlit run app.py
    <img width="1920" height="902" alt="image" src="https://github.com/user-attachments/assets/a19a167f-2f74-420b-b5d9-03f70ade7a9c" />
    <br>
    ===>(sidebar to apply the filters)<===
-
+   <img width="930" height="858" alt="image" src="https://github.com/user-attachments/assets/4f43801c-e4b2-4fca-963b-f4321627b073" />
+   <br>
+    ===>(Let's see recommendation)<===
+    <img width="1919" height="894" alt="image" src="https://github.com/user-attachments/assets/0d356cdf-8245-47b4-8162-b573e341e124" />
+    <br>
+    ===>(Algorithm Evualvation)<===
+    <img width="1920" height="891" alt="image" src="https://github.com/user-attachments/assets/f34b1e0d-661f-458a-85cf-154bf1cd5252" />
+    <br>
+    ===>(Performance Evalvuation)<===
+    <img width="1918" height="914" alt="image" src="https://github.com/user-attachments/assets/ddfc220a-2e2b-4225-b39e-6eba1e0e6f54" />
+    <br>
+    ===>(Data Visualization)<===
+    <img width="1920" height="921" alt="image" src="https://github.com/user-attachments/assets/25211d33-1d04-4869-a1ab-7e4c5cf73929" />
+    <br>
+    ===>(rating Distribuition)<===
+    <img width="1318" height="903" alt="image" src="https://github.com/user-attachments/assets/3e3cf31b-ba91-46f7-bfb5-619b47fab6ac" />
+    <br>
+    ===>(genre Analysis)<===
+    <img width="1917" height="837" alt="image" src="https://github.com/user-attachments/assets/4bad1577-13a3-4326-9175-57c468dcd578" />
+    <br>
+    ===>(Dataset overview)<===   
+    <img width="1917" height="882" alt="image" src="https://github.com/user-attachments/assets/a31fbf49-0b5d-4bde-bd4c-064a4adbe4ff" />
 
 5. **Experiment**: Try different users, algorithms, and parameters
 
