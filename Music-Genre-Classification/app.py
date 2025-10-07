@@ -211,14 +211,14 @@ class MusicGenreClassifier:
             tonnetz_std = np.std(tonnetz, axis=1)
             
             # Combine all features
-            features = np.hstack([
+            features = np.concatenate([
                 mfcc_mean, mfcc_std,
-                [spectral_centroid_mean, spectral_centroid_std,
-                 spectral_bandwidth_mean, spectral_bandwidth_std,
-                 spectral_rolloff_mean, spectral_rolloff_std,
-                 zcr_mean, zcr_std],
+                np.array([spectral_centroid_mean, spectral_centroid_std,
+                         spectral_bandwidth_mean, spectral_bandwidth_std,
+                         spectral_rolloff_mean, spectral_rolloff_std,
+                         zcr_mean, zcr_std]),
                 chroma_mean, chroma_std,
-                [tempo, rhythm_mean, rhythm_std],
+                np.array([tempo, rhythm_mean, rhythm_std]),
                 tonnetz_mean, tonnetz_std
             ])
             
@@ -315,6 +315,10 @@ class MusicGenreClassifier:
 
 def main():
     """Main Streamlit app"""
+    
+    # Initialize variables
+    features = None
+    spectrogram_path = None
     
     # Header
     st.markdown('<h1 class="main-header">🎵 Music Genre Classification</h1>', unsafe_allow_html=True)
