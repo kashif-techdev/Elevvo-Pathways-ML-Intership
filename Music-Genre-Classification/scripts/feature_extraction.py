@@ -1,5 +1,5 @@
 """
-🎵 Music Genre Classification - Feature Extraction Script
+Music Genre Classification - Feature Extraction Script
 
 Extracts audio features using librosa for the feature-based approach.
 Implements MFCC, spectral features, and other audio characteristics.
@@ -150,7 +150,7 @@ class AudioFeatureExtractor:
 
 def process_dataset(data_path, output_path):
     """Process entire dataset and extract features"""
-    print("🎵 Music Genre Classification - Feature Extraction")
+    print("Music Genre Classification - Feature Extraction")
     print("=" * 60)
     
     # Initialize feature extractor
@@ -164,16 +164,16 @@ def process_dataset(data_path, output_path):
     all_labels = []
     all_files = []
     
-    print(f"📊 Processing {len(genres)} genres...")
+    print(f"[INFO] Processing {len(genres)} genres...")
     
     for genre in genres:
         genre_path = data_path / "raw" / genre
         if not genre_path.exists():
-            print(f"⚠️  Genre folder not found: {genre_path}")
+            print(f"[WARNING] Genre folder not found: {genre_path}")
             continue
         
         audio_files = list(genre_path.glob("*.wav")) + list(genre_path.glob("*.au"))
-        print(f"🎵 {genre}: {len(audio_files)} files")
+        print(f"[GENRE] {genre}: {len(audio_files)} files")
         
         for file_path in tqdm(audio_files, desc=f"Processing {genre}"):
             features = extractor.extract_features(file_path)
@@ -186,7 +186,7 @@ def process_dataset(data_path, output_path):
     X = np.array(all_features)
     y = np.array(all_labels)
     
-    print(f"\n📈 Feature Extraction Complete!")
+    print(f"\n[SUCCESS] Feature Extraction Complete!")
     print(f"   • Total samples: {len(X)}")
     print(f"   • Feature dimensions: {X.shape[1]}")
     print(f"   • Genres: {len(np.unique(y))}")
@@ -228,7 +228,7 @@ def process_dataset(data_path, output_path):
     import json
     with open(stats_path, 'w') as f:
         json.dump(stats, f, indent=2)
-    print(f"📊 Saved statistics to: {stats_path}")
+    print(f"[SUCCESS] Saved statistics to: {stats_path}")
     
     return df, X, y
 
@@ -241,14 +241,14 @@ def main():
     # Check if raw data exists
     raw_path = data_path / "raw"
     if not raw_path.exists():
-        print("❌ Raw data folder not found!")
+        print("[ERROR] Raw data folder not found!")
         print("Please run: python scripts/download_dataset.py")
         return
     
     # Process dataset
     df, X, y = process_dataset(data_path, output_path)
     
-    print("\n🎯 Next Steps:")
+    print("\n[NEXT] Next Steps:")
     print("   1. Run: python scripts/train_test_split.py")
     print("   2. Run: python scripts/train_tabular_models.py")
     print("   3. Run: python scripts/create_spectrograms.py")

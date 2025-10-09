@@ -15,16 +15,16 @@ from tqdm import tqdm
 
 def download_file(url, filename):
     """Download file with progress bar"""
-    print(f"📥 Downloading {filename}...")
+    print(f"[DOWNLOAD] Downloading {filename}...")
     
     def progress_hook(block_num, block_size, total_size):
         downloaded = block_num * block_size
         if total_size > 0:
             percent = min(100, (downloaded * 100) / total_size)
-            print(f"\r📊 Progress: {percent:.1f}%", end="", flush=True)
+            print(f"\r[PROGRESS] {percent:.1f}%", end="", flush=True)
     
     urllib.request.urlretrieve(url, filename, reporthook=progress_hook)
-    print(f"\n✅ Downloaded {filename}")
+    print(f"\n[SUCCESS] Downloaded {filename}")
 
 def create_genre_folders(base_path):
     """Create folders for each music genre"""
@@ -36,13 +36,13 @@ def create_genre_folders(base_path):
     for genre in genres:
         genre_path = base_path / genre
         genre_path.mkdir(parents=True, exist_ok=True)
-        print(f"📁 Created folder: {genre}")
+        print(f"[FOLDER] Created folder: {genre}")
     
     return genres
 
 def organize_dataset(source_path, target_path, genres):
     """Organize downloaded files into genre folders"""
-    print("🔄 Organizing dataset...")
+    print("[ORGANIZE] Organizing dataset...")
     
     # Create target directories
     for genre in genres:
@@ -53,10 +53,10 @@ def organize_dataset(source_path, target_path, genres):
     for ext in ['*.wav', '*.au']:
         audio_files.extend(source_path.glob(ext))
     
-    print(f"📊 Found {len(audio_files)} audio files")
+    print(f"[INFO] Found {len(audio_files)} audio files")
     
     # Organize files by genre
-    for file_path in tqdm(audio_files, desc="📂 Organizing files"):
+    for file_path in tqdm(audio_files, desc="Organizing files"):
         filename = file_path.stem.lower()
         
         # Determine genre based on filename
@@ -70,13 +70,13 @@ def organize_dataset(source_path, target_path, genres):
             target_file = target_path / genre / file_path.name
             shutil.copy2(file_path, target_file)
         else:
-            print(f"⚠️  Could not determine genre for: {file_path.name}")
+            print(f"[WARNING] Could not determine genre for: {file_path.name}")
     
-    print("✅ Dataset organization complete!")
+    print("[SUCCESS] Dataset organization complete!")
 
 def main():
     """Main function to download and organize dataset"""
-    print("🎵 Music Genre Classification - Dataset Setup")
+    print("Music Genre Classification - Dataset Setup")
     print("=" * 50)
     
     # Create paths
@@ -94,26 +94,26 @@ def main():
         "https://archive.ics.uci.edu/ml/datasets/GTZAN+Music+Genre+Collection"
     ]
     
-    print("📋 GTZAN Dataset Information:")
+    print("[INFO] GTZAN Dataset Information:")
     print("   • 1000 audio files (10 genres × 100 songs)")
     print("   • 30 seconds per track")
     print("   • WAV format")
     print("   • Genres: blues, classical, country, disco, hiphop, jazz, metal, pop, reggae, rock")
     print()
     
-    print("⚠️  Manual Download Required:")
+    print("[WARNING] Manual Download Required:")
     print("   The GTZAN dataset needs to be downloaded manually from:")
     print("   1. Kaggle: https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification")
     print("   2. UCI ML Repository: https://archive.ics.uci.edu/ml/datasets/GTZAN+Music+Genre+Collection")
     print()
-    print("📁 Please download and extract the dataset to:")
+    print("[FOLDER] Please download and extract the dataset to:")
     print(f"   {raw_path}")
     print()
     
     # Create genre folders
     genres = create_genre_folders(raw_path)
     
-    print("🎯 Next Steps:")
+    print("[NEXT] Next Steps:")
     print("   1. Download GTZAN dataset from one of the sources above")
     print("   2. Extract all audio files to the 'data/raw' folder")
     print("   3. Run: python scripts/organize_dataset.py")
@@ -163,14 +163,14 @@ def organize_gtzan_dataset():
 
 if __name__ == "__main__":
     organize_gtzan_dataset()
-    print("✅ Dataset organization complete!")
+    print("[SUCCESS] Dataset organization complete!")
 """
     
     organize_script_path = project_root / "scripts" / "organize_dataset.py"
     with open(organize_script_path, 'w') as f:
         f.write(organize_script)
     
-    print(f"📝 Created organize script: {organize_script_path}")
+    print(f"[SUCCESS] Created organize script: {organize_script_path}")
 
 if __name__ == "__main__":
     main()

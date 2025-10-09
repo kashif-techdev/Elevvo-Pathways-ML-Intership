@@ -12,16 +12,16 @@ import time
 
 def run_script(script_name, description):
     """Run a Python script and handle errors"""
-    print(f"\n🚀 {description}")
+    print(f"\n[START] {description}")
     print("=" * 60)
     
     try:
         result = subprocess.run([sys.executable, script_name], 
                               capture_output=True, text=True, check=True)
-        print(f"✅ {description} completed successfully!")
+        print(f"[SUCCESS] {description} completed successfully!")
         return True
     except subprocess.CalledProcessError as e:
-        print(f"❌ {description} failed!")
+        print(f"[ERROR] {description} failed!")
         print(f"Error: {e.stderr}")
         return False
 
@@ -30,7 +30,7 @@ def main():
     project_root = Path(__file__).parent.parent
     scripts_path = project_root / "scripts"
     
-    print("🎵 Music Genre Classification - Complete Training Pipeline")
+    print("Music Genre Classification - Complete Training Pipeline")
     print("=" * 80)
     print("This will run all training scripts in the correct order.")
     print("Make sure you have downloaded the GTZAN dataset first!")
@@ -56,7 +56,7 @@ def main():
         script_path = scripts_path / script_name
         
         if not script_path.exists():
-            print(f"⚠️  Script not found: {script_name}")
+            print(f"[WARNING] Script not found: {script_name}")
             continue
         
         success = run_script(str(script_path), description)
@@ -64,7 +64,7 @@ def main():
         if success:
             successful_steps += 1
         else:
-            print(f"\n❌ Pipeline stopped at: {description}")
+            print(f"\n[ERROR] Pipeline stopped at: {description}")
             print("Please fix the error and run the remaining steps manually.")
             break
         
@@ -72,18 +72,18 @@ def main():
         time.sleep(2)
     
     # Summary
-    print(f"\n📊 Training Pipeline Summary:")
+    print(f"\n[SUMMARY] Training Pipeline Summary:")
     print(f"   • Completed: {successful_steps}/{total_steps} steps")
     print(f"   • Success rate: {successful_steps/total_steps*100:.1f}%")
     
     if successful_steps == total_steps:
-        print("\n🎉 All training steps completed successfully!")
-        print("\n🎯 Next Steps:")
+        print("\n[SUCCESS] All training steps completed successfully!")
+        print("\n[NEXT] Next Steps:")
         print("   1. Run: streamlit run app.py")
         print("   2. Check results in data/processed/")
         print("   3. Review model performance")
     else:
-        print(f"\n⚠️  Pipeline incomplete. {total_steps - successful_steps} steps remaining.")
+        print(f"\n[WARNING] Pipeline incomplete. {total_steps - successful_steps} steps remaining.")
         print("Please run the remaining scripts manually.")
 
 if __name__ == "__main__":

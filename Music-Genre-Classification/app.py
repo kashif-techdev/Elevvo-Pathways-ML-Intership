@@ -119,7 +119,11 @@ class MusicGenreClassifier:
             if encoder_path.exists():
                 self.label_encoder = joblib.load(encoder_path)
             
-            st.success(f"✅ Loaded {len(self.tabular_models)} tabular models and {len(self.cnn_models)} CNN models")
+            if len(self.tabular_models) == 0 and len(self.cnn_models) == 0:
+                st.warning("⚠️ No trained models found. Please run the training scripts first.")
+                st.info("💡 To train models, run: `python scripts/train_all_models.py`")
+            else:
+                st.success(f"✅ Loaded {len(self.tabular_models)} tabular models and {len(self.cnn_models)} CNN models")
             
         except Exception as e:
             st.error(f"❌ Error loading models: {e}")
@@ -161,8 +165,17 @@ class MusicGenreClassifier:
     def extract_audio_features(self, audio_file):
         """Extract features from uploaded audio file"""
         try:
-            # Load audio
-            y, sr = librosa.load(audio_file, sr=22050, duration=30)
+            # Load audio with error handling
+            try:
+                y, sr = librosa.load(audio_file, sr=22050, duration=30)
+            except Exception as e:
+                st.error(f"❌ Error loading audio file: {e}")
+                return None, None, None
+            
+            # Check if audio is valid
+            if len(y) == 0:
+                st.error("❌ Audio file is empty or corrupted")
+                return None, None, None
             
             # Extract features (same as training)
             # MFCC features
@@ -172,20 +185,20 @@ class MusicGenreClassifier:
             
             # Spectral features
             spectral_centroids = librosa.feature.spectral_centroid(y=y, sr=sr)
-            spectral_centroid_mean = np.mean(spectral_centroids)
-            spectral_centroid_std = np.std(spectral_centroids)
+            spectral_centroid_mean = float(np.mean(spectral_centroids))
+            spectral_centroid_std = float(np.std(spectral_centroids))
             
             spectral_bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr)
-            spectral_bandwidth_mean = np.mean(spectral_bandwidth)
-            spectral_bandwidth_std = np.std(spectral_bandwidth)
+            spectral_bandwidth_mean = float(np.mean(spectral_bandwidth))
+            spectral_bandwidth_std = float(np.std(spectral_bandwidth))
             
             spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
-            spectral_rolloff_mean = np.mean(spectral_rolloff)
-            spectral_rolloff_std = np.std(spectral_rolloff)
+            spectral_rolloff_mean = float(np.mean(spectral_rolloff))
+            spectral_rolloff_std = float(np.std(spectral_rolloff))
             
             zcr = librosa.feature.zero_crossing_rate(y)
-            zcr_mean = np.mean(zcr)
-            zcr_std = np.std(zcr)
+            zcr_mean = float(np.mean(zcr))
+            zcr_std = float(np.std(zcr))
             
             # Chroma features
             chroma = librosa.feature.chroma_stft(y=y, sr=sr)
@@ -193,34 +206,58 @@ class MusicGenreClassifier:
             chroma_std = np.std(chroma, axis=1)
             
             # Rhythm features
-            tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
+            try:
+                tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
+                tempo = float(tempo) if not np.isnan(tempo) else 0.0
+            except:
+                tempo = 0.0
+                
             onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
             onset_times = librosa.frames_to_time(onset_frames, sr=sr)
             
             if len(onset_times) > 1:
                 onset_intervals = np.diff(onset_times)
-                rhythm_mean = np.mean(onset_intervals)
-                rhythm_std = np.std(onset_intervals)
+                rhythm_mean = float(np.mean(onset_intervals))
+                rhythm_std = float(np.std(onset_intervals))
             else:
-                rhythm_mean = 0
-                rhythm_std = 0
+                rhythm_mean = 0.0
+                rhythm_std = 0.0
             
             # Tonnetz features
             tonnetz = librosa.feature.tonnetz(y=y, sr=sr)
             tonnetz_mean = np.mean(tonnetz, axis=1)
             tonnetz_std = np.std(tonnetz, axis=1)
             
-            # Combine all features
-            features = np.concatenate([
-                mfcc_mean, mfcc_std,
-                np.array([spectral_centroid_mean, spectral_centroid_std,
-                         spectral_bandwidth_mean, spectral_bandwidth_std,
-                         spectral_rolloff_mean, spectral_rolloff_std,
-                         zcr_mean, zcr_std]),
-                chroma_mean, chroma_std,
-                np.array([tempo, rhythm_mean, rhythm_std]),
-                tonnetz_mean, tonnetz_std
+            # Ensure all arrays are 1D and have consistent shapes
+            # Flatten all arrays to ensure they're 1D
+            mfcc_mean_flat = np.asarray(mfcc_mean).flatten()
+            mfcc_std_flat = np.asarray(mfcc_std).flatten()
+            chroma_mean_flat = np.asarray(chroma_mean).flatten()
+            chroma_std_flat = np.asarray(chroma_std).flatten()
+            tonnetz_mean_flat = np.asarray(tonnetz_mean).flatten()
+            tonnetz_std_flat = np.asarray(tonnetz_std).flatten()
+            
+            # Create scalar features array
+            scalar_features = np.array([
+                spectral_centroid_mean, spectral_centroid_std,
+                spectral_bandwidth_mean, spectral_bandwidth_std,
+                spectral_rolloff_mean, spectral_rolloff_std,
+                zcr_mean, zcr_std, tempo, rhythm_mean, rhythm_std
             ])
+            
+            # Combine all features - ensure all arrays are 1D
+            features = np.concatenate([
+                mfcc_mean_flat, 
+                mfcc_std_flat,
+                scalar_features,
+                chroma_mean_flat, 
+                chroma_std_flat,
+                tonnetz_mean_flat, 
+                tonnetz_std_flat
+            ])
+            
+            # Ensure features is a 1D numpy array
+            features = np.asarray(features).flatten()
             
             return features, y, sr
             
@@ -231,6 +268,9 @@ class MusicGenreClassifier:
     def create_spectrogram(self, y, sr):
         """Create mel spectrogram from audio"""
         try:
+            # Ensure data directory exists
+            self.data_path.mkdir(parents=True, exist_ok=True)
+            
             # Create mel spectrogram
             S = librosa.feature.melspectrogram(y=y, sr=sr, n_mels=128)
             S_db = librosa.power_to_db(S, ref=np.max)
@@ -257,32 +297,62 @@ class MusicGenreClassifier:
         """Predict genre using tabular models"""
         predictions = {}
         
-        # Standardize features
-        features_scaled = self.scaler.transform(features.reshape(1, -1))
+        # Check if models and scaler are available
+        if not hasattr(self, 'scaler') or self.scaler is None:
+            st.error("❌ Scaler not found. Please train the models first.")
+            return predictions
+            
+        if not hasattr(self, 'label_encoder') or self.label_encoder is None:
+            st.error("❌ Label encoder not found. Please train the models first.")
+            return predictions
+            
+        if not self.tabular_models:
+            st.warning("⚠️ No tabular models found. Please train the models first.")
+            return predictions
         
-        for name, model in self.tabular_models.items():
-            try:
-                # Make prediction
-                pred_proba = model.predict_proba(features_scaled)[0]
-                pred_class = model.predict(features_scaled)[0]
-                
-                # Get class name
-                class_name = self.label_encoder.inverse_transform([pred_class])[0]
-                
-                predictions[name] = {
-                    'class': class_name,
-                    'confidence': pred_proba[pred_class],
-                    'probabilities': dict(zip(self.label_encoder.classes_, pred_proba))
-                }
-                
-            except Exception as e:
-                st.error(f"❌ Error with {name}: {e}")
+        try:
+            # Standardize features
+            features_scaled = self.scaler.transform(features.reshape(1, -1))
+            
+            for name, model in self.tabular_models.items():
+                try:
+                    # Make prediction
+                    pred_proba = model.predict_proba(features_scaled)[0]
+                    pred_class = model.predict(features_scaled)[0]
+                    
+                    # Get class name
+                    class_name = self.label_encoder.inverse_transform([pred_class])[0]
+                    
+                    predictions[name] = {
+                        'class': class_name,
+                        'confidence': pred_proba[pred_class],
+                        'probabilities': dict(zip(self.label_encoder.classes_, pred_proba))
+                    }
+                    
+                except Exception as e:
+                    st.error(f"❌ Error with {name}: {e}")
+        
+        except Exception as e:
+            st.error(f"❌ Error in tabular prediction: {e}")
         
         return predictions
     
     def predict_genre_cnn(self, spectrogram_path):
         """Predict genre using CNN models"""
         predictions = {}
+        
+        # Check if models and encoder are available
+        if not hasattr(self, 'label_encoder') or self.label_encoder is None:
+            st.error("❌ Label encoder not found. Please train the models first.")
+            return predictions
+            
+        if not self.cnn_models:
+            st.warning("⚠️ No CNN models found. Please train the models first.")
+            return predictions
+        
+        if not spectrogram_path or not Path(spectrogram_path).exists():
+            st.error("❌ Spectrogram file not found.")
+            return predictions
         
         try:
             # Load and preprocess image
@@ -349,6 +419,17 @@ def main():
         help="Upload a 30-second audio file for genre classification"
     )
     
+    # File validation
+    if uploaded_file is not None:
+        # Check file size (limit to 50MB)
+        max_size = 50 * 1024 * 1024  # 50MB
+        if uploaded_file.size > max_size:
+            st.error(f"❌ File too large. Maximum size is 50MB. Your file is {uploaded_file.size / (1024*1024):.1f}MB")
+            uploaded_file = None
+        elif uploaded_file.size < 1024:  # Less than 1KB
+            st.error("❌ File too small. Please upload a valid audio file.")
+            uploaded_file = None
+    
     # Main content
     if uploaded_file is not None:
         st.success("✅ Audio file uploaded successfully!")
@@ -364,16 +445,25 @@ def main():
         
         # Process audio
         with st.spinner("🎵 Processing audio file..."):
-            features, y, sr = classifier.extract_audio_features(uploaded_file)
-            
-            if features is not None:
-                st.success("✅ Audio features extracted successfully!")
+            try:
+                features, y, sr = classifier.extract_audio_features(uploaded_file)
                 
-                # Create spectrogram
-                spectrogram_path = classifier.create_spectrogram(y, sr)
-                
-                if spectrogram_path is not None:
-                    st.success("✅ Spectrogram created successfully!")
+                if features is not None:
+                    st.success("✅ Audio features extracted successfully!")
+                    
+                    # Create spectrogram
+                    spectrogram_path = classifier.create_spectrogram(y, sr)
+                    
+                    if spectrogram_path is not None:
+                        st.success("✅ Spectrogram created successfully!")
+                    else:
+                        st.warning("⚠️ Could not create spectrogram, but features were extracted successfully.")
+                else:
+                    st.error("❌ Failed to extract audio features. Please try a different audio file.")
+                    st.info("💡 Tips: Make sure your audio file is not corrupted and is in a supported format (WAV, MP3, M4A, FLAC)")
+            except Exception as e:
+                st.error(f"❌ Unexpected error during processing: {e}")
+                st.info("💡 Please try uploading a different audio file or check if the file is not corrupted.")
         
         # Display results
         if features is not None:

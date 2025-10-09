@@ -1,5 +1,5 @@
 """
-🎵 Music Genre Classification - Spectrogram Generation Script
+Music Genre Classification - Spectrogram Generation Script
 
 Creates mel spectrograms from audio files for the image-based approach.
 Converts audio to visual representations for CNN classification.
@@ -98,14 +98,14 @@ class SpectrogramGenerator:
         total_files = 0
         successful_files = 0
         
-        print(f"🎵 Creating {spectrogram_type} spectrograms...")
+        print(f"[START] Creating {spectrogram_type} spectrograms...")
         
         for genre in genres:
             genre_input_path = data_path / "raw" / genre
             genre_output_path = output_path / spectrogram_type / genre
             
             if not genre_input_path.exists():
-                print(f"⚠️  Genre folder not found: {genre_input_path}")
+                print(f"[WARNING] Genre folder not found: {genre_input_path}")
                 continue
             
             # Create output directory
@@ -115,7 +115,7 @@ class SpectrogramGenerator:
             audio_files = list(genre_input_path.glob("*.wav")) + list(genre_input_path.glob("*.au"))
             total_files += len(audio_files)
             
-            print(f"🎵 {genre}: {len(audio_files)} files")
+            print(f"[GENRE] {genre}: {len(audio_files)} files")
             
             for file_path in tqdm(audio_files, desc=f"Processing {genre}"):
                 # Create output filename
@@ -154,11 +154,11 @@ def create_multiple_spectrogram_types(data_path, output_path):
             data_path, output_path, spec_type
         )
         
-        print(f"✅ {spec_type}: {successful}/{total} files processed")
+        print(f"[SUCCESS] {spec_type}: {successful}/{total} files processed")
 
 def create_combined_spectrograms(data_path, output_path):
     """Create combined spectrograms with multiple features"""
-    print("\n🎨 Creating combined spectrograms...")
+    print("\n[INFO] Creating combined spectrograms...")
     
     genres = ['blues', 'classical', 'country', 'disco', 'hiphop',
               'jazz', 'metal', 'pop', 'reggae', 'rock']
@@ -226,14 +226,14 @@ def main():
     # Check if raw data exists
     raw_path = data_path / "raw"
     if not raw_path.exists():
-        print("❌ Raw data folder not found!")
+        print("[ERROR] Raw data folder not found!")
         print("Please run: python scripts/download_dataset.py")
         return
     
     # Create output directory
     output_path.mkdir(parents=True, exist_ok=True)
     
-    print("🎵 Music Genre Classification - Spectrogram Generation")
+    print("Music Genre Classification - Spectrogram Generation")
     print("=" * 60)
     
     # Create different types of spectrograms
@@ -242,7 +242,7 @@ def main():
     # Create combined spectrograms
     create_combined_spectrograms(data_path, output_path)
     
-    print("\n🎯 Next Steps:")
+    print("\n[NEXT] Next Steps:")
     print("   1. Run: python scripts/train_cnn_models.py")
     print("   2. Run: python scripts/transfer_learning.py")
     print("   3. Run: streamlit run app.py")

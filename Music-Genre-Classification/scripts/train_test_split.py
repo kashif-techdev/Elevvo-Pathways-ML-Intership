@@ -1,5 +1,5 @@
 """
-🎵 Music Genre Classification - Train/Test Split Script
+Music Genre Classification - Train/Test Split Script
 
 Creates proper train/test splits for both feature-based and image-based approaches.
 Implements stratified splitting to ensure balanced representation.
@@ -20,7 +20,7 @@ def load_feature_data(data_path):
     # Try to load from pickle first (faster)
     pickle_path = processed_path / "audio_features.pkl"
     if pickle_path.exists():
-        print("📊 Loading features from pickle...")
+        print("[INFO] Loading features from pickle...")
         data = joblib.load(pickle_path)
         X = data['features']
         y = data['labels']
@@ -30,11 +30,11 @@ def load_feature_data(data_path):
         # Load from CSV
         csv_path = processed_path / "audio_features.csv"
         if not csv_path.exists():
-            print("❌ Feature data not found!")
+            print("[ERROR] Feature data not found!")
             print("Please run: python scripts/feature_extraction.py")
             return None
         
-        print("📊 Loading features from CSV...")
+        print("[INFO] Loading features from CSV...")
         df = pd.read_csv(csv_path)
         X = df.drop(['genre', 'file_path'], axis=1).values
         y = df['genre'].values
@@ -49,7 +49,7 @@ def load_feature_data(data_path):
 
 def create_stratified_split(X, y, test_size=0.2, random_state=42):
     """Create stratified train/test split"""
-    print(f"\n🔄 Creating stratified train/test split (test_size={test_size})...")
+    print(f"\n[INFO] Creating stratified train/test split (test_size={test_size})...")
     
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, 
@@ -65,7 +65,7 @@ def create_stratified_split(X, y, test_size=0.2, random_state=42):
     train_dist = pd.Series(y_train).value_counts().sort_index()
     test_dist = pd.Series(y_test).value_counts().sort_index()
     
-    print("\n📊 Class distribution:")
+    print("\n[INFO] Class distribution:")
     print("Genre".ljust(12) + "Train".ljust(8) + "Test".ljust(8) + "Total")
     print("-" * 40)
     for genre in sorted(np.unique(y)):
@@ -90,7 +90,7 @@ def standardize_features(X_train, X_test):
 
 def encode_labels(y_train, y_test):
     """Encode string labels to integers"""
-    print("\n🏷️  Encoding labels...")
+    print("\n[INFO] Encoding labels...")
     
     label_encoder = LabelEncoder()
     y_train_encoded = label_encoder.fit_transform(y_train)
@@ -146,11 +146,11 @@ def save_split_data(data_path, X_train, X_test, y_train, y_test,
     metadata_path = processed_path / "split_metadata.json"
     with open(metadata_path, 'w') as f:
         json.dump(metadata, f, indent=2)
-    print(f"📊 Saved metadata to: {metadata_path}")
+    print(f"[SUCCESS] Saved metadata to: {metadata_path}")
 
 def create_cv_splits(X, y, n_splits=5, random_state=42):
     """Create cross-validation splits"""
-    print(f"\n🔄 Creating {n_splits}-fold cross-validation splits...")
+    print(f"\n[INFO] Creating {n_splits}-fold cross-validation splits...")
     
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
     cv_splits = []
@@ -175,11 +175,11 @@ def create_cv_splits(X, y, n_splits=5, random_state=42):
 
 def prepare_spectrogram_data(data_path):
     """Prepare spectrogram data for CNN training"""
-    print("\n🖼️  Preparing spectrogram data...")
+    print("\n[INFO] Preparing spectrogram data...")
     
     spectrogram_path = data_path / "spectrograms"
     if not spectrogram_path.exists():
-        print("❌ Spectrogram data not found!")
+        print("[ERROR] Spectrogram data not found!")
         print("Please run: python scripts/create_spectrograms.py")
         return None
     
@@ -199,7 +199,7 @@ def prepare_spectrogram_data(data_path):
             print(f"   • {genre}: {len(files)} spectrograms")
     
     if not image_files:
-        print("❌ No spectrogram files found!")
+        print("[ERROR] No spectrogram files found!")
         return None
     
     # Create stratified split for images
@@ -233,7 +233,7 @@ def main():
     project_root = Path(__file__).parent.parent
     data_path = project_root / "data"
     
-    print("🎵 Music Genre Classification - Train/Test Split")
+    print("Music Genre Classification - Train/Test Split")
     print("=" * 60)
     
     # Load feature data
@@ -263,12 +263,12 @@ def main():
     cv_splits = create_cv_splits(X_train_scaled, y_train_encoded)
     cv_path = data_path / "processed" / "cv_splits.pkl"
     joblib.dump(cv_splits, cv_path)
-    print(f"💾 Saved CV splits to: {cv_path}")
+    print(f"[SUCCESS] Saved CV splits to: {cv_path}")
     
     # Prepare spectrogram data
     img_data = prepare_spectrogram_data(data_path)
     
-    print("\n🎯 Next Steps:")
+    print("\n[NEXT] Next Steps:")
     print("   1. Run: python scripts/train_tabular_models.py")
     print("   2. Run: python scripts/train_cnn_models.py")
     print("   3. Run: python scripts/evaluate_models.py")
