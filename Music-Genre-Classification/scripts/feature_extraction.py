@@ -99,21 +99,92 @@ class AudioFeatureExtractor:
             # Load audio file
             y, sr = librosa.load(file_path, sr=self.sample_rate, duration=self.duration)
             
-            # Extract different feature groups
-            mfcc_features = self.extract_mfcc(y, sr)
-            spectral_features = self.extract_spectral_features(y, sr)
-            chroma_features = self.extract_chroma_features(y, sr)
-            rhythm_features = self.extract_rhythm_features(y, sr)
-            tonnetz_features = self.extract_tonnetz_features(y, sr)
+            # Check if audio is valid
+            if len(y) == 0:
+                print(f"Error: Empty audio file {file_path}")
+                return None
             
-            # Combine all features
-            features = np.hstack([
-                mfcc_features,
-                spectral_features,
-                chroma_features,
-                rhythm_features,
-                tonnetz_features
+            # Extract features (same as app.py robust method)
+            # MFCC features
+            mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=20)
+            mfcc_mean = np.mean(mfcc, axis=1)
+            mfcc_std = np.std(mfcc, axis=1)
+            
+            # Spectral features
+            spectral_centroids = librosa.feature.spectral_centroid(y=y, sr=sr)
+            spectral_centroid_mean = float(np.mean(spectral_centroids))
+            spectral_centroid_std = float(np.std(spectral_centroids))
+            
+            spectral_bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr)
+            spectral_bandwidth_mean = float(np.mean(spectral_bandwidth))
+            spectral_bandwidth_std = float(np.std(spectral_bandwidth))
+            
+            spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
+            spectral_rolloff_mean = float(np.mean(spectral_rolloff))
+            spectral_rolloff_std = float(np.std(spectral_rolloff))
+            
+            zcr = librosa.feature.zero_crossing_rate(y)
+            zcr_mean = float(np.mean(zcr))
+            zcr_std = float(np.std(zcr))
+            
+            # Chroma features
+            chroma = librosa.feature.chroma_stft(y=y, sr=sr)
+            chroma_mean = np.mean(chroma, axis=1)
+            chroma_std = np.std(chroma, axis=1)
+            
+            # Rhythm features
+            try:
+                tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
+                tempo = float(tempo) if not np.isnan(tempo) else 0.0
+            except:
+                tempo = 0.0
+                
+            onset_frames = librosa.onset.onset_detect(y=y, sr=sr)
+            onset_times = librosa.frames_to_time(onset_frames, sr=sr)
+            
+            if len(onset_times) > 1:
+                onset_intervals = np.diff(onset_times)
+                rhythm_mean = float(np.mean(onset_intervals))
+                rhythm_std = float(np.std(onset_intervals))
+            else:
+                rhythm_mean = 0.0
+                rhythm_std = 0.0
+            
+            # Tonnetz features
+            tonnetz = librosa.feature.tonnetz(y=y, sr=sr)
+            tonnetz_mean = np.mean(tonnetz, axis=1)
+            tonnetz_std = np.std(tonnetz, axis=1)
+            
+            # Ensure all arrays are 1D and have consistent shapes
+            # Flatten all arrays to ensure they're 1D
+            mfcc_mean_flat = np.asarray(mfcc_mean).flatten()
+            mfcc_std_flat = np.asarray(mfcc_std).flatten()
+            chroma_mean_flat = np.asarray(chroma_mean).flatten()
+            chroma_std_flat = np.asarray(chroma_std).flatten()
+            tonnetz_mean_flat = np.asarray(tonnetz_mean).flatten()
+            tonnetz_std_flat = np.asarray(tonnetz_std).flatten()
+            
+            # Create scalar features array
+            scalar_features = np.array([
+                spectral_centroid_mean, spectral_centroid_std,
+                spectral_bandwidth_mean, spectral_bandwidth_std,
+                spectral_rolloff_mean, spectral_rolloff_std,
+                zcr_mean, zcr_std, tempo, rhythm_mean, rhythm_std
             ])
+            
+            # Combine all features - ensure all arrays are 1D
+            features = np.concatenate([
+                mfcc_mean_flat, 
+                mfcc_std_flat,
+                scalar_features,
+                chroma_mean_flat, 
+                chroma_std_flat,
+                tonnetz_mean_flat, 
+                tonnetz_std_flat
+            ])
+            
+            # Ensure features is a 1D numpy array
+            features = np.asarray(features).flatten()
             
             return features
             
@@ -217,10 +288,10 @@ def process_dataset(data_path, output_path):
     
     # Save feature statistics
     stats = {
-        'total_samples': len(X),
-        'feature_dimensions': X.shape[1],
+        'total_samples': int(len(X)),
+        'feature_dimensions': int(X.shape[1]),
         'genres': list(np.unique(y)),
-        'genre_counts': dict(pd.Series(y).value_counts()),
+        'genre_counts': {str(k): int(v) for k, v in pd.Series(y).value_counts().items()},
         'feature_names': feature_names
     }
     
