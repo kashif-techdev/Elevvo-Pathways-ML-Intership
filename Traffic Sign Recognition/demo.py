@@ -12,7 +12,7 @@ from training_evaluation import TrafficSignTrainer
 
 def demo_data_preprocessing():
     """Demonstrate data preprocessing capabilities"""
-    print("🔍 Data Preprocessing Demo")
+    print("Data Preprocessing Demo")
     print("=" * 30)
     
     # Initialize processor
@@ -173,7 +173,7 @@ def demo_visualization():
 
 def main():
     """Main demo function"""
-    print("🚦 Traffic Sign Recognition - Project Demo")
+    print("Traffic Sign Recognition - Project Demo")
     print("=" * 50)
     print("This demo showcases the main capabilities of the project.")
     print("For full functionality, use the complete dataset and training pipeline.")
