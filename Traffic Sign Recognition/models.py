@@ -194,7 +194,7 @@ class TrafficSignModelBuilder:
         model.compile(
             optimizer=Adam(learning_rate=learning_rate),
             loss='categorical_crossentropy',
-            metrics=['accuracy', 'top_3_accuracy']
+            metrics=['accuracy']
         )
         
         return model
@@ -254,7 +254,7 @@ class TrafficSignModelBuilder:
         model.compile(
             optimizer=Adam(learning_rate=learning_rate),
             loss='categorical_crossentropy',
-            metrics=['accuracy', 'top_3_accuracy']
+            metrics=['accuracy']
         )
         
         return model
