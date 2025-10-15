@@ -66,6 +66,22 @@ This project implements a state-of-the-art traffic sign recognition system that 
 - Easy deployment options
 - Scalable design patterns
 
+  ###  **Screen shot**
+  <img width="1919" height="994" alt="{EAED429A-89EF-4618-B3B1-D1E62B2CA85D}" src="https://github.com/user-attachments/assets/ea81be65-4d30-4390-9f59-825cea119bf5" />
+  <br><br>
+  <img width="1917" height="997" alt="{9876BD5F-436C-4880-B780-395A2D6C6FF3}" src="https://github.com/user-attachments/assets/e7b62bb8-818c-457c-8df1-3efa1d7619f0" />
+   <br><br>
+   <img width="1918" height="1003" alt="{5E9B0E22-0086-4DAE-8DE0-A1CF8C3AA90B}" src="https://github.com/user-attachments/assets/fe7a87e7-8ef9-4ee7-9323-e23a3849e104" />
+    <br><br>
+    <img width="1916" height="999" alt="{768FEA43-A317-4038-BD64-22717F1B3BE7}" src="https://github.com/user-attachments/assets/b8094e26-be9c-44dc-9272-0ee8074abfcd" />
+<br><br>
+<img width="1920" height="997" alt="{033B53DF-214C-4601-BD1C-DAE893020B1B}" src="https://github.com/user-attachments/assets/4abc1a8e-c2cf-425f-b27e-aa76c113f1d8" />
+<br><br>
+
+
+
+
+
 ## 📁 Project Structure
 
 ```
