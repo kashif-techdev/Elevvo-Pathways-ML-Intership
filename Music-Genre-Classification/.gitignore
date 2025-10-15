@@ -28,6 +28,31 @@ ENV/
 env.bak/
 venv.bak/
 
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Model files (too large for GitHub)
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+data/models/*.pkl
+data/models/*.json
+
+# Data files (keep structure but not large files)
+data/raw/
+data/processed/*.csv
+data/processed/*.pkl
+data/processed/*.png
+data/processed/*.json
+data/spectrograms/
+
+# Audio files
+*.wav
+*.mp3
+*.flac
+*.m4a
+
 # IDE
 .vscode/
 .idea/
@@ -35,37 +60,22 @@ venv.bak/
 *.swo
 *~
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# Data files
-data/raw/
-data/processed/
-data/spectrograms/
-*.pkl
-*.h5
-*.csv
-*.json
-
-# Model files
-models/
-*.pkl
-*.h5
-*.joblib
-
-# Logs
-*.log
-logs/
-
 # OS
 .DS_Store
 Thumbs.db
 
-# Streamlit
-.streamlit/
+# Logs
+*.log
+logs/
 
 # Temporary files
 temp/
 tmp/
 *.tmp
 
+# Streamlit
+.streamlit/
+
+# TensorFlow
+checkpoints/
+tensorboard_logs/
