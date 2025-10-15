@@ -1,5 +1,5 @@
 """
-🎵 Music Genre Classification - Model Evaluation Script
+[MUSIC] Music Genre Classification - Model Evaluation Script
 
 Comprehensive evaluation of all trained models.
 Generates detailed performance metrics and visualizations.
@@ -34,12 +34,12 @@ class ModelEvaluator:
         
     def load_data(self):
         """Load test data and models"""
-        print("📊 Loading test data and models...")
+        print("[CHART] Loading test data and models...")
         
         # Load split data
         split_path = self.processed_path / "train_test_split.pkl"
         if not split_path.exists():
-            print("❌ Train/test split not found!")
+            print("[ERROR] Train/test split not found!")
             return False
         
         split_data = joblib.load(split_path)
@@ -74,18 +74,18 @@ class ModelEvaluator:
             model_path = self.models_path / filename
             if model_path.exists():
                 self.tabular_models[name] = joblib.load(model_path)
-                print(f"   ✅ Loaded {name}")
+                print(f"   [OK] Loaded {name}")
             else:
-                print(f"   ⚠️  {name} not found")
+                print(f"   [WARNING]  {name} not found")
         
         print(f"   • Loaded {len(self.tabular_models)} tabular models")
     
     def evaluate_tabular_models(self):
         """Evaluate tabular models"""
-        print("\n📊 Evaluating tabular models...")
+        print("\n[CHART] Evaluating tabular models...")
         
         for name, model in self.tabular_models.items():
-            print(f"\n🎯 Evaluating {name}...")
+            print(f"\n[TARGET] Evaluating {name}...")
             
             try:
                 # Make predictions
@@ -122,17 +122,17 @@ class ModelEvaluator:
                     )
                 }
                 
-                print(f"   ✅ Accuracy: {accuracy:.4f}")
-                print(f"   ✅ F1-Score: {f1:.4f}")
-                print(f"   ✅ CV Score: {cv_mean:.4f} (±{cv_std:.4f})")
+                print(f"   [OK] Accuracy: {accuracy:.4f}")
+                print(f"   [OK] F1-Score: {f1:.4f}")
+                print(f"   [OK] CV Score: {cv_mean:.4f} (±{cv_std:.4f})")
                 
             except Exception as e:
-                print(f"   ❌ Error evaluating {name}: {e}")
+                print(f"   [ERROR] Error evaluating {name}: {e}")
                 continue
     
     def create_performance_comparison(self):
         """Create performance comparison visualization"""
-        print("\n📊 Creating performance comparison...")
+        print("\n[CHART] Creating performance comparison...")
         
         # Prepare data for visualization
         model_names = list(self.results.keys())
@@ -174,13 +174,13 @@ class ModelEvaluator:
         # Save plot
         plots_path = self.processed_path / "performance_comparison.png"
         fig.write_image(str(plots_path))
-        print(f"💾 Saved performance comparison to: {plots_path}")
+        print(f"[SAVED] Saved performance comparison to: {plots_path}")
         
         return fig
     
     def create_confusion_matrices(self):
         """Create confusion matrices for all models"""
-        print("\n📊 Creating confusion matrices...")
+        print("\n[CHART] Creating confusion matrices...")
         
         n_models = len(self.results)
         fig, axes = plt.subplots(2, 3, figsize=(18, 12))
@@ -209,12 +209,12 @@ class ModelEvaluator:
         # Save plot
         plots_path = self.processed_path / "confusion_matrices.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved confusion matrices to: {plots_path}")
+        print(f"[SAVED] Saved confusion matrices to: {plots_path}")
         plt.show()
     
     def create_roc_curves(self):
         """Create ROC curves for models with probabilities"""
-        print("\n📊 Creating ROC curves...")
+        print("\n[CHART] Creating ROC curves...")
         
         fig, ax = plt.subplots(figsize=(10, 8))
         
@@ -231,7 +231,7 @@ class ModelEvaluator:
                         ax.plot(fpr, tpr, label=f'{name} - {class_name}', alpha=0.7)
                     
                 except Exception as e:
-                    print(f"   ⚠️  Could not create ROC curve for {name}: {e}")
+                    print(f"   [WARNING]  Could not create ROC curve for {name}: {e}")
         
         ax.plot([0, 1], [0, 1], 'k--', label='Random')
         ax.set_xlabel('False Positive Rate')
@@ -245,12 +245,12 @@ class ModelEvaluator:
         # Save plot
         plots_path = self.processed_path / "roc_curves.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved ROC curves to: {plots_path}")
+        print(f"[SAVED] Saved ROC curves to: {plots_path}")
         plt.show()
     
     def create_class_performance(self):
         """Create per-class performance analysis"""
-        print("\n📊 Creating per-class performance analysis...")
+        print("\n[CHART] Creating per-class performance analysis...")
         
         # Prepare data
         class_names = self.label_encoder.classes_
@@ -292,12 +292,12 @@ class ModelEvaluator:
         # Save plot
         plots_path = self.processed_path / "class_performance.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved class performance to: {plots_path}")
+        print(f"[SAVED] Saved class performance to: {plots_path}")
         plt.show()
     
     def generate_summary_report(self):
         """Generate comprehensive summary report"""
-        print("\n📊 Generating summary report...")
+        print("\n[CHART] Generating summary report...")
         
         # Create summary DataFrame
         summary_data = []
@@ -320,10 +320,10 @@ class ModelEvaluator:
         # Save summary
         summary_path = self.processed_path / "evaluation_summary.csv"
         summary_df.to_csv(summary_path, index=False)
-        print(f"💾 Saved summary to: {summary_path}")
+        print(f"[SAVED] Saved summary to: {summary_path}")
         
         # Print summary
-        print("\n📊 Evaluation Summary:")
+        print("\n[CHART] Evaluation Summary:")
         print("=" * 80)
         print(summary_df.to_string(index=False))
         
@@ -346,7 +346,7 @@ class ModelEvaluator:
         results_path = self.processed_path / "detailed_evaluation_results.json"
         with open(results_path, 'w') as f:
             json.dump(detailed_results, f, indent=2)
-        print(f"💾 Saved detailed results to: {results_path}")
+        print(f"[SAVED] Saved detailed results to: {results_path}")
         
         return summary_df
 
@@ -355,7 +355,7 @@ def main():
     project_root = Path(__file__).parent.parent
     data_path = project_root / "data"
     
-    print("🎵 Music Genre Classification - Model Evaluation")
+    print("[MUSIC] Music Genre Classification - Model Evaluation")
     print("=" * 70)
     
     # Initialize evaluator
@@ -380,7 +380,7 @@ def main():
     # Generate summary
     summary_df = evaluator.generate_summary_report()
     
-    print(f"\n🎯 Next Steps:")
+    print(f"\n[TARGET] Next Steps:")
     print(f"   1. Run: python scripts/compare_approaches.py")
     print(f"   2. Run: streamlit run app.py")
     print(f"   3. Check results in data/processed/")

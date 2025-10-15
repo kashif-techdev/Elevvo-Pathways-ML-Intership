@@ -1,5 +1,5 @@
 """
-🎵 Music Genre Classification - Transfer Learning Script
+[MUSIC] Music Genre Classification - Transfer Learning Script
 
 Implements transfer learning with pre-trained models for enhanced performance.
 Uses MobileNetV2, ResNet50, and VGG16 for spectrogram classification.
@@ -38,11 +38,11 @@ class TransferLearningTrainer:
         # Load image split data
         img_split_path = processed_path / "image_train_test_split.pkl"
         if not img_split_path.exists():
-            print("❌ Image train/test split not found!")
+            print("[ERROR] Image train/test split not found!")
             print("Please run: python scripts/train_test_split.py")
             return False
         
-        print("📊 Loading spectrogram data...")
+        print("[CHART] Loading spectrogram data...")
         import joblib
         img_data = joblib.load(img_split_path)
         
@@ -237,8 +237,8 @@ class TransferLearningTrainer:
             'history': combined_history
         }
         
-        print(f"   ✅ Final Validation Accuracy: {val_accuracy:.4f}")
-        print(f"   ✅ Final Validation Loss: {val_loss:.4f}")
+        print(f"   [OK] Final Validation Accuracy: {val_accuracy:.4f}")
+        print(f"   [OK] Final Validation Loss: {val_loss:.4f}")
         
         return model, combined_history
     
@@ -258,7 +258,7 @@ class TransferLearningTrainer:
     
     def plot_training_history(self):
         """Plot training history for all transfer learning models"""
-        print("\n📊 Creating training history plots...")
+        print("\n[CHART] Creating training history plots...")
         
         n_models = len(self.history)
         fig, axes = plt.subplots(2, n_models, figsize=(5*n_models, 10))
@@ -290,12 +290,12 @@ class TransferLearningTrainer:
         # Save plot
         plots_path = self.processed_path / "transfer_learning_history.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved training history to: {plots_path}")
+        print(f"[SAVED] Saved training history to: {plots_path}")
         plt.show()
     
     def compare_transfer_models(self):
         """Compare different transfer learning models"""
-        print("\n📊 Transfer Learning Model Comparison:")
+        print("\n[CHART] Transfer Learning Model Comparison:")
         print("=" * 60)
         print(f"{'Model':<25} {'Val Accuracy':<15} {'Val Loss':<15}")
         print("-" * 60)
@@ -314,7 +314,7 @@ class TransferLearningTrainer:
     
     def create_model_comparison_plot(self):
         """Create comparison plot for all models"""
-        print("\n📊 Creating model comparison plot...")
+        print("\n[CHART] Creating model comparison plot...")
         
         # Prepare data
         model_names = list(self.results.keys())
@@ -342,12 +342,12 @@ class TransferLearningTrainer:
         # Save plot
         plots_path = self.processed_path / "transfer_models_comparison.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved comparison plot to: {plots_path}")
+        print(f"[SAVED] Saved comparison plot to: {plots_path}")
         plt.show()
     
     def save_models(self):
         """Save transfer learning models"""
-        print("\n💾 Saving transfer learning models...")
+        print("\n[SAVED] Saving transfer learning models...")
         
         models_path = self.data_path / "models"
         models_path.mkdir(parents=True, exist_ok=True)
@@ -355,7 +355,7 @@ class TransferLearningTrainer:
         for name, result in self.results.items():
             model_path = models_path / f"{name.lower().replace(' ', '_')}_transfer.h5"
             result['model'].save(model_path)
-            print(f"   💾 Saved {name} to: {model_path}")
+            print(f"   [SAVED] Saved {name} to: {model_path}")
         
         # Save results summary
         results_summary = {}
@@ -369,14 +369,14 @@ class TransferLearningTrainer:
         import json
         with open(results_path, 'w') as f:
             json.dump(results_summary, f, indent=2)
-        print(f"💾 Saved results to: {results_path}")
+        print(f"[SAVED] Saved results to: {results_path}")
 
 def main():
     """Main function"""
     project_root = Path(__file__).parent.parent
     data_path = project_root / "data"
     
-    print("🎵 Music Genre Classification - Transfer Learning")
+    print("[MUSIC] Music Genre Classification - Transfer Learning")
     print("=" * 70)
     
     # Initialize trainer
@@ -399,7 +399,7 @@ def main():
     
     # Train transfer learning models
     for model_name, base_model_name in transfer_models:
-        print(f"\n🎯 Training {model_name}...")
+        print(f"\n[TARGET] Training {model_name}...")
         
         # Create model
         model = trainer.create_transfer_model(base_model_name)
@@ -417,7 +417,7 @@ def main():
     # Save models
     trainer.save_models()
     
-    print(f"\n🎯 Next Steps:")
+    print(f"\n[TARGET] Next Steps:")
     print(f"   1. Run: python scripts/compare_approaches.py")
     print(f"   2. Run: streamlit run app.py")
     print(f"   3. Check results in data/models/")

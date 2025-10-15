@@ -1,5 +1,5 @@
 """
-🎵 Music Genre Classification - Tabular Models Training Script
+Music Genre Classification - Tabular Models Training Script
 
 Trains classical machine learning models for feature-based approach.
 Implements Random Forest, SVM, and Gradient Boosting classifiers.
@@ -38,11 +38,11 @@ class TabularModelTrainer:
         # Load split data
         split_path = processed_path / "train_test_split.pkl"
         if not split_path.exists():
-            print("❌ Train/test split not found!")
+            print("[ERROR] Train/test split not found!")
             print("Please run: python scripts/train_test_split.py")
             return None
         
-        print("📊 Loading train/test split data...")
+        print("[LOADING] Train/test split data...")
         split_data = joblib.load(split_path)
         
         self.X_train = split_data['X_train']
@@ -91,14 +91,14 @@ class TabularModelTrainer:
             'Naive Bayes': GaussianNB()
         }
         
-        print(f"🤖 Defined {len(self.models)} models for training")
+        print(f"[ROBOT] Defined {len(self.models)} models for training")
     
     def train_models(self):
         """Train all models"""
-        print("\n🚀 Training models...")
+        print("\n[ROCKET] Training models...")
         
         for name, model in tqdm(self.models.items(), desc="Training"):
-            print(f"\n🎯 Training {name}...")
+            print(f"\n[TARGET] Training {name}...")
             
             try:
                 # Train model
@@ -112,7 +112,7 @@ class TabularModelTrainer:
                 accuracy = accuracy_score(self.y_test, y_pred)
                 
                 # Cross-validation score
-                cv_scores = cross_val_score(model, self.X_train, self.y_train, cv=5)
+                cv_scores = cross_val_score(model, self.X_train, self.y_train, cv=3)
                 cv_mean = cv_scores.mean()
                 cv_std = cv_scores.std()
                 
@@ -131,19 +131,19 @@ class TabularModelTrainer:
                     )
                 }
                 
-                print(f"   ✅ Accuracy: {accuracy:.4f}")
-                print(f"   ✅ CV Score: {cv_mean:.4f} (±{cv_std:.4f})")
+                print(f"   [OK] Accuracy: {accuracy:.4f}")
+                print(f"   [OK] CV Score: {cv_mean:.4f} (±{cv_std:.4f})")
                 
             except Exception as e:
-                print(f"   ❌ Error training {name}: {e}")
+                print(f"   [ERROR] Error training {name}: {e}")
                 continue
     
     def hyperparameter_tuning(self):
         """Perform hyperparameter tuning for best models"""
-        print("\n🔧 Performing hyperparameter tuning...")
+        print("\n[TOOL] Performing hyperparameter tuning...")
         
         # Random Forest tuning
-        print("🎯 Tuning Random Forest...")
+        print("[TARGET] Tuning Random Forest...")
         rf_params = {
             'n_estimators': [50, 100, 200],
             'max_depth': [10, 20, None],
@@ -163,7 +163,7 @@ class TabularModelTrainer:
         print(f"   Best RF score: {rf_grid.best_score_:.4f}")
         
         # SVM tuning
-        print("🎯 Tuning SVM...")
+        print("[TARGET] Tuning SVM...")
         svm_params = {
             'C': [0.1, 1, 10],
             'gamma': ['scale', 'auto', 0.001, 0.01]
@@ -189,7 +189,7 @@ class TabularModelTrainer:
     
     def evaluate_models(self):
         """Evaluate all trained models"""
-        print("\n📊 Model Evaluation Results:")
+        print("\n[CHART] Model Evaluation Results:")
         print("=" * 80)
         print(f"{'Model':<20} {'Accuracy':<10} {'CV Mean':<10} {'CV Std':<10} {'F1-Score':<10}")
         print("-" * 80)
@@ -204,13 +204,13 @@ class TabularModelTrainer:
                              key=lambda x: self.results[x]['accuracy'])
         best_accuracy = self.results[best_model_name]['accuracy']
         
-        print(f"\n🏆 Best Model: {best_model_name} (Accuracy: {best_accuracy:.4f})")
+        print(f"\n[TROPHY] Best Model: {best_model_name} (Accuracy: {best_accuracy:.4f})")
         
         return best_model_name
     
     def plot_confusion_matrices(self):
         """Plot confusion matrices for all models"""
-        print("\n📊 Creating confusion matrices...")
+        print("\n[CHART] Creating confusion matrices...")
         
         n_models = len(self.results)
         fig, axes = plt.subplots(2, 3, figsize=(18, 12))
@@ -239,12 +239,12 @@ class TabularModelTrainer:
         # Save plot
         plots_path = self.data_path / "processed" / "confusion_matrices.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved confusion matrices to: {plots_path}")
+        print(f"[SAVED] Saved confusion matrices to: {plots_path}")
         plt.show()
     
     def plot_feature_importance(self):
         """Plot feature importance for tree-based models"""
-        print("\n📊 Creating feature importance plots...")
+        print("\n[CHART] Creating feature importance plots...")
         
         tree_models = ['Random Forest', 'Gradient Boosting']
         
@@ -271,12 +271,12 @@ class TabularModelTrainer:
         # Save plot
         plots_path = self.data_path / "processed" / "feature_importance.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved feature importance to: {plots_path}")
+        print(f"[SAVED] Saved feature importance to: {plots_path}")
         plt.show()
     
     def save_models(self):
         """Save trained models"""
-        print("\n💾 Saving trained models...")
+        print("\n[SAVED] Saving trained models...")
         
         models_path = self.data_path / "models"
         models_path.mkdir(parents=True, exist_ok=True)
@@ -284,7 +284,7 @@ class TabularModelTrainer:
         for name, result in self.results.items():
             model_path = models_path / f"{name.lower().replace(' ', '_')}.pkl"
             joblib.dump(result['model'], model_path)
-            print(f"   💾 Saved {name} to: {model_path}")
+            print(f"   [SAVED] Saved {name} to: {model_path}")
         
         # Save results summary
         results_summary = {}
@@ -299,14 +299,14 @@ class TabularModelTrainer:
         results_path = models_path / "tabular_results.json"
         with open(results_path, 'w') as f:
             json.dump(results_summary, f, indent=2)
-        print(f"💾 Saved results to: {results_path}")
+        print(f"[SAVED] Saved results to: {results_path}")
 
 def main():
     """Main function"""
     project_root = Path(__file__).parent.parent
     data_path = project_root / "data"
     
-    print("🎵 Music Genre Classification - Tabular Models Training")
+    print("[MUSIC] Music Genre Classification - Tabular Models Training")
     print("=" * 70)
     
     # Initialize trainer
@@ -338,7 +338,7 @@ def main():
     # Save models
     trainer.save_models()
     
-    print(f"\n🎯 Next Steps:")
+    print(f"\n[TARGET] Next Steps:")
     print(f"   1. Run: python scripts/train_cnn_models.py")
     print(f"   2. Run: python scripts/evaluate_models.py")
     print(f"   3. Run: streamlit run app.py")

@@ -1,5 +1,5 @@
 """
-🎵 Music Genre Classification - CNN Models Training Script
+[MUSIC] Music Genre Classification - CNN Models Training Script
 
 Trains CNN models for spectrogram-based approach.
 Implements custom CNN and transfer learning models.
@@ -38,11 +38,11 @@ class CNNModelTrainer:
         # Load image split data
         img_split_path = processed_path / "image_train_test_split.pkl"
         if not img_split_path.exists():
-            print("❌ Image train/test split not found!")
+            print("[ERROR] Image train/test split not found!")
             print("Please run: python scripts/train_test_split.py")
             return None
         
-        print("📊 Loading spectrogram data...")
+        print("[CHART] Loading spectrogram data...")
         img_data = joblib.load(img_split_path)
         
         self.X_train_paths = img_data['X_train']
@@ -62,7 +62,7 @@ class CNNModelTrainer:
     
     def create_data_generators(self, batch_size=32, img_size=(128, 128)):
         """Create data generators for training and validation"""
-        print(f"\n🔄 Creating data generators (batch_size={batch_size}, img_size={img_size})...")
+        print(f"\n[GEAR] Creating data generators (batch_size={batch_size}, img_size={img_size})...")
         
         # Data augmentation for training
         train_datagen = ImageDataGenerator(
@@ -103,7 +103,7 @@ class CNNModelTrainer:
     
     def create_custom_cnn(self, input_shape=(128, 128, 3), num_classes=10):
         """Create custom CNN model"""
-        print("\n🏗️  Creating custom CNN model...")
+        print("\n[BUILDING] Creating custom CNN model...")
         
         model = models.Sequential([
             # First Convolutional Block
@@ -260,14 +260,14 @@ class CNNModelTrainer:
             'history': history.history
         }
         
-        print(f"   ✅ Validation Accuracy: {val_accuracy:.4f}")
-        print(f"   ✅ Validation Loss: {val_loss:.4f}")
+        print(f"   [OK] Validation Accuracy: {val_accuracy:.4f}")
+        print(f"   [OK] Validation Loss: {val_loss:.4f}")
         
         return model, history
     
     def plot_training_history(self):
         """Plot training history for all models"""
-        print("\n📊 Creating training history plots...")
+        print("\n[CHART] Creating training history plots...")
         
         n_models = len(self.history)
         fig, axes = plt.subplots(2, n_models, figsize=(5*n_models, 10))
@@ -299,12 +299,12 @@ class CNNModelTrainer:
         # Save plot
         plots_path = self.data_path / "processed" / "cnn_training_history.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved training history to: {plots_path}")
+        print(f"[SAVED] Saved training history to: {plots_path}")
         plt.show()
     
     def evaluate_models(self, val_gen):
         """Evaluate all trained models"""
-        print("\n📊 CNN Model Evaluation Results:")
+        print("\n[CHART] CNN Model Evaluation Results:")
         print("=" * 60)
         print(f"{'Model':<25} {'Val Accuracy':<15} {'Val Loss':<15}")
         print("-" * 60)
@@ -323,7 +323,7 @@ class CNNModelTrainer:
     
     def save_models(self):
         """Save trained models"""
-        print("\n💾 Saving CNN models...")
+        print("\n[SAVED] Saving CNN models...")
         
         models_path = self.data_path / "models"
         models_path.mkdir(parents=True, exist_ok=True)
@@ -331,7 +331,7 @@ class CNNModelTrainer:
         for name, result in self.results.items():
             model_path = models_path / f"{name.lower().replace(' ', '_')}.h5"
             result['model'].save(model_path)
-            print(f"   💾 Saved {name} to: {model_path}")
+            print(f"   [SAVED] Saved {name} to: {model_path}")
         
         # Save results summary
         results_summary = {}
@@ -344,14 +344,14 @@ class CNNModelTrainer:
         results_path = models_path / "cnn_results.json"
         with open(results_path, 'w') as f:
             json.dump(results_summary, f, indent=2)
-        print(f"💾 Saved results to: {results_path}")
+        print(f"[SAVED] Saved results to: {results_path}")
 
 def main():
     """Main function"""
     project_root = Path(__file__).parent.parent
     data_path = project_root / "data"
     
-    print("🎵 Music Genre Classification - CNN Models Training")
+    print("[MUSIC] Music Genre Classification - CNN Models Training")
     print("=" * 70)
     
     # Initialize trainer
@@ -383,7 +383,7 @@ def main():
     # Save models
     trainer.save_models()
     
-    print(f"\n🎯 Next Steps:")
+    print(f"\n[TARGET] Next Steps:")
     print(f"   1. Run: python scripts/transfer_learning.py")
     print(f"   2. Run: python scripts/evaluate_models.py")
     print(f"   3. Run: streamlit run app.py")

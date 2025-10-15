@@ -78,7 +78,7 @@ def create_stratified_split(X, y, test_size=0.2, random_state=42):
 
 def standardize_features(X_train, X_test):
     """Standardize features using StandardScaler"""
-    print("\n🔧 Standardizing features...")
+    print("\n[STANDARDIZING] Features...")
     
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
@@ -120,16 +120,16 @@ def save_split_data(data_path, X_train, X_test, y_train, y_test,
     
     split_path = processed_path / "train_test_split.pkl"
     joblib.dump(split_data, split_path)
-    print(f"💾 Saved split data to: {split_path}")
+    print(f"[SAVED] Split data to: {split_path}")
     
     # Save scaler and encoder
     scaler_path = processed_path / "feature_scaler.pkl"
     joblib.dump(scaler, scaler_path)
-    print(f"💾 Saved scaler to: {scaler_path}")
+    print(f"[SAVED] Scaler to: {scaler_path}")
     
     encoder_path = processed_path / "label_encoder.pkl"
     joblib.dump(label_encoder, encoder_path)
-    print(f"💾 Saved label encoder to: {encoder_path}")
+    print(f"[SAVED] Label encoder to: {encoder_path}")
     
     # Save metadata
     metadata = {
@@ -148,7 +148,7 @@ def save_split_data(data_path, X_train, X_test, y_train, y_test,
         json.dump(metadata, f, indent=2)
     print(f"[SUCCESS] Saved metadata to: {metadata_path}")
 
-def create_cv_splits(X, y, n_splits=5, random_state=42):
+def create_cv_splits(X, y, n_splits=3, random_state=42):
     """Create cross-validation splits"""
     print(f"\n[INFO] Creating {n_splits}-fold cross-validation splits...")
     
@@ -224,7 +224,7 @@ def prepare_spectrogram_data(data_path):
     processed_path = data_path / "processed"
     img_split_path = processed_path / "image_train_test_split.pkl"
     joblib.dump(img_split_data, img_split_path)
-    print(f"💾 Saved image split data to: {img_split_path}")
+    print(f"[SAVED] Image split data to: {img_split_path}")
     
     return img_split_data
 

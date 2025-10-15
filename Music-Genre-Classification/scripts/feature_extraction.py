@@ -274,7 +274,7 @@ def process_dataset(data_path, output_path):
     # Save as CSV
     csv_path = output_path / "audio_features.csv"
     df.to_csv(csv_path, index=False)
-    print(f"💾 Saved features to: {csv_path}")
+    print(f"[SAVED] Features to: {csv_path}")
     
     # Save as pickle for faster loading
     pickle_path = output_path / "audio_features.pkl"
@@ -284,7 +284,7 @@ def process_dataset(data_path, output_path):
         'feature_names': feature_names,
         'file_paths': all_files
     }, pickle_path)
-    print(f"💾 Saved features to: {pickle_path}")
+    print(f"[SAVED] Features to: {pickle_path}")
     
     # Save feature statistics
     stats = {

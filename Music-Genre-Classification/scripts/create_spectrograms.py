@@ -132,7 +132,7 @@ class SpectrogramGenerator:
                 if success:
                     successful_files += 1
         
-        print(f"\n📈 Spectrogram Generation Complete!")
+        print(f"\n[SUCCESS] Spectrogram Generation Complete!")
         print(f"   • Total files: {total_files}")
         print(f"   • Successful: {successful_files}")
         print(f"   • Success rate: {successful_files/total_files*100:.1f}%")
@@ -146,7 +146,7 @@ def create_multiple_spectrogram_types(data_path, output_path):
     spectrogram_types = ['mel', 'chroma', 'mfcc']
     
     for spec_type in spectrogram_types:
-        print(f"\n🎨 Creating {spec_type} spectrograms...")
+        print(f"\n[CREATING] {spec_type} spectrograms...")
         output_type_path = output_path / spec_type
         output_type_path.mkdir(parents=True, exist_ok=True)
         

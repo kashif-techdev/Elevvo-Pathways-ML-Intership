@@ -1,5 +1,5 @@
 """
-🎵 Music Genre Classification - Approach Comparison Script
+[MUSIC] Music Genre Classification - Approach Comparison Script
 
 Compares feature-based vs image-based approaches.
 Generates comprehensive comparison analysis and visualizations.
@@ -29,27 +29,27 @@ class ApproachComparator:
         
     def load_results(self):
         """Load results from both approaches"""
-        print("📊 Loading results from both approaches...")
+        print("[CHART] Loading results from both approaches...")
         
         # Load tabular results
         tabular_results_path = self.models_path / "tabular_results.json"
         if tabular_results_path.exists():
             with open(tabular_results_path, 'r') as f:
                 self.tabular_results = json.load(f)
-            print(f"   ✅ Loaded {len(self.tabular_results)} tabular models")
+            print(f"   [OK] Loaded {len(self.tabular_results)} tabular models")
         else:
             self.tabular_results = {}
-            print("   ⚠️  Tabular results not found")
+            print("   [WARNING]  Tabular results not found")
         
         # Load CNN results
         cnn_results_path = self.models_path / "cnn_results.json"
         if cnn_results_path.exists():
             with open(cnn_results_path, 'r') as f:
                 self.cnn_results = json.load(f)
-            print(f"   ✅ Loaded {len(self.cnn_results)} CNN models")
+            print(f"   [OK] Loaded {len(self.cnn_results)} CNN models")
         else:
             self.cnn_results = {}
-            print("   ⚠️  CNN results not found")
+            print("   [WARNING]  CNN results not found")
         
         # Load dataset statistics
         stats_path = self.processed_path / "feature_stats.json"
@@ -61,7 +61,7 @@ class ApproachComparator:
     
     def create_approach_comparison(self):
         """Create comprehensive approach comparison"""
-        print("\n📊 Creating approach comparison...")
+        print("\n[CHART] Creating approach comparison...")
         
         # Prepare data for comparison
         comparison_data = []
@@ -97,7 +97,7 @@ class ApproachComparator:
             'CV_Mean': ['mean', 'std']
         }).round(4)
         
-        print("\n📊 Approach Comparison Summary:")
+        print("\n[CHART] Approach Comparison Summary:")
         print("=" * 60)
         print(approach_stats)
         
@@ -105,7 +105,7 @@ class ApproachComparator:
     
     def create_accuracy_comparison(self):
         """Create accuracy comparison visualization"""
-        print("\n📊 Creating accuracy comparison...")
+        print("\n[CHART] Creating accuracy comparison...")
         
         # Create grouped bar chart
         fig = px.bar(
@@ -127,13 +127,13 @@ class ApproachComparator:
         # Save plot
         plots_path = self.processed_path / "accuracy_comparison.png"
         fig.write_image(str(plots_path))
-        print(f"💾 Saved accuracy comparison to: {plots_path}")
+        print(f"[SAVED] Saved accuracy comparison to: {plots_path}")
         
         return fig
     
     def create_approach_radar_chart(self):
         """Create radar chart comparing approaches"""
-        print("\n📊 Creating radar chart...")
+        print("\n[CHART] Creating radar chart...")
         
         # Calculate approach averages
         approach_means = self.comparison_df.groupby('Approach').mean()
@@ -168,13 +168,13 @@ class ApproachComparator:
         # Save plot
         plots_path = self.processed_path / "approach_radar_chart.png"
         fig.write_image(str(plots_path))
-        print(f"💾 Saved radar chart to: {plots_path}")
+        print(f"[SAVED] Saved radar chart to: {plots_path}")
         
         return fig
     
     def create_model_performance_heatmap(self):
         """Create model performance heatmap"""
-        print("\n📊 Creating performance heatmap...")
+        print("\n[CHART] Creating performance heatmap...")
         
         # Pivot data for heatmap
         heatmap_data = self.comparison_df.pivot(
@@ -204,12 +204,12 @@ class ApproachComparator:
         # Save plot
         plots_path = self.processed_path / "performance_heatmap.png"
         plt.savefig(plots_path, dpi=300, bbox_inches='tight')
-        print(f"💾 Saved heatmap to: {plots_path}")
+        print(f"[SAVED] Saved heatmap to: {plots_path}")
         plt.show()
     
     def create_approach_advantages(self):
         """Analyze advantages of each approach"""
-        print("\n📊 Analyzing approach advantages...")
+        print("\n[CHART] Analyzing approach advantages...")
         
         # Calculate statistics
         feature_based = self.comparison_df[self.comparison_df['Approach'] == 'Feature-Based']
@@ -239,7 +239,7 @@ class ApproachComparator:
         # Create comparison table
         comparison_table = pd.DataFrame(advantages).T
         
-        print("\n📊 Approach Advantages Analysis:")
+        print("\n[CHART] Approach Advantages Analysis:")
         print("=" * 80)
         print(comparison_table.to_string())
         
@@ -247,13 +247,13 @@ class ApproachComparator:
         advantages_path = self.processed_path / "approach_advantages.json"
         with open(advantages_path, 'w') as f:
             json.dump(advantages, f, indent=2)
-        print(f"💾 Saved advantages to: {advantages_path}")
+        print(f"[SAVED] Saved advantages to: {advantages_path}")
         
         return advantages
     
     def create_recommendations(self):
         """Generate recommendations based on comparison"""
-        print("\n📊 Generating recommendations...")
+        print("\n[CHART] Generating recommendations...")
         
         # Find best models
         best_feature_model = self.comparison_df[
@@ -294,24 +294,24 @@ class ApproachComparator:
             }
         }
         
-        print("\n📊 Recommendations:")
+        print("\n[CHART] Recommendations:")
         print("=" * 50)
         print(f"🏆 Best Feature-Based Model: {recommendations['Best Feature-Based Model']['Model']}")
         print(f"🏆 Best Image-Based Model: {recommendations['Best Image-Based Model']['Model']}")
-        print(f"🎯 Overall Best Approach: {recommendations['Overall Best Approach']}")
-        print(f"📊 Performance Difference: {recommendations['Performance Difference']:.4f}")
+        print(f"[TARGET] Overall Best Approach: {recommendations['Overall Best Approach']}")
+        print(f"[CHART] Performance Difference: {recommendations['Performance Difference']:.4f}")
         
         # Save recommendations
         recommendations_path = self.processed_path / "recommendations.json"
         with open(recommendations_path, 'w') as f:
             json.dump(recommendations, f, indent=2)
-        print(f"💾 Saved recommendations to: {recommendations_path}")
+        print(f"[SAVED] Saved recommendations to: {recommendations_path}")
         
         return recommendations
     
     def create_comprehensive_report(self):
         """Create comprehensive comparison report"""
-        print("\n📊 Creating comprehensive report...")
+        print("\n[CHART] Creating comprehensive report...")
         
         # Generate all comparisons
         comparison_df, approach_stats = self.create_approach_comparison()
@@ -340,7 +340,7 @@ class ApproachComparator:
         report_path = self.processed_path / "comprehensive_comparison_report.json"
         with open(report_path, 'w') as f:
             json.dump(report, f, indent=2)
-        print(f"💾 Saved comprehensive report to: {report_path}")
+        print(f"[SAVED] Saved comprehensive report to: {report_path}")
         
         return report
 
@@ -349,7 +349,7 @@ def main():
     project_root = Path(__file__).parent.parent
     data_path = project_root / "data"
     
-    print("🎵 Music Genre Classification - Approach Comparison")
+    print("[MUSIC] Music Genre Classification - Approach Comparison")
     print("=" * 70)
     
     # Initialize comparator
@@ -361,7 +361,7 @@ def main():
     # Create comprehensive comparison
     report = comparator.create_comprehensive_report()
     
-    print(f"\n🎯 Next Steps:")
+    print(f"\n[TARGET] Next Steps:")
     print(f"   1. Run: streamlit run app.py")
     print(f"   2. Check results in data/processed/")
     print(f"   3. Review comprehensive report")
