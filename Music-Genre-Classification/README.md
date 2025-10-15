@@ -142,6 +142,31 @@ Music-Genre-Classification/
 - **Model Comparison**: Performance metrics comparison
 - **Feature Importance**: Most important audio features
 
+### **screen shots**
+{71FBD487-5251-4226-9769-1B16638E9063}.png
+<br><br>
+{F003321B-22E5-42FB-AC16-FE69A7B2F6B8}.png
+<br><br>
+### **cheking output**
+{0DEACC4D-1F69-495E-9648-7A0F16DD9C16}.png
+<br><br>
+{13EE3B34-47D2-4F30-86D0-6888D2CB3DF5}.png
+<br><br>
+{90A9A131-2CEC-4151-AD0C-606F5C66A3E5}.png
+<br><br>
+{7903FFC7-9EC6-4FED-8C78-E9246523E340}.png
+<br><br>
+{8CE5A6F5-DA45-48FB-8F48-E1A3015481C7}.png
+<br><br>
+{72304807-B6B6-4A0A-B553-084506C3407E}.png
+
+
+
+
+
+
+
+
 ## 📈 Performance Comparison
 
 | Approach | Model | Accuracy | F1-Score |
