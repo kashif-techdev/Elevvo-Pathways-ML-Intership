@@ -88,6 +88,10 @@ The program creates a picture file called `sales_forecasting_results.png` that s
 - Which model works best
 - What features are most important
 
+## Screen shot
+<img width="1284" height="935" alt="{4FF94DDF-8FF7-433F-AAC5-48E8AD3913E3}" src="https://github.com/user-attachments/assets/3454c372-c4b8-43e9-b5fc-d287bb100f69" />
+
+
 ## Summary
 
 This project successfully creates a sales forecasting system with all required bonus features. It's ready to use and can be easily modified for different data or requirements.
