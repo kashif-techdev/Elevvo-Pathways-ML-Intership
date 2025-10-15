@@ -143,22 +143,23 @@ Music-Genre-Classification/
 - **Feature Importance**: Most important audio features
 
 ### **screen shots**
-{71FBD487-5251-4226-9769-1B16638E9063}.png
+<img width="1920" height="997" alt="{730B8462-A731-42D6-B4DC-3CFB514976E1}" src="https://github.com/user-attachments/assets/e7f85257-a14c-402b-bd04-dd15de719d0b" />
 <br><br>
-{F003321B-22E5-42FB-AC16-FE69A7B2F6B8}.png
+<img width="1920" height="995" alt="{DBD27BBA-3689-40E0-A7A1-0CA8BD6790EA}" src="https://github.com/user-attachments/assets/12897cac-d7da-482d-b2bb-2f38a4320658" />
 <br><br>
 ### **cheking output**
-{0DEACC4D-1F69-495E-9648-7A0F16DD9C16}.png
+<img width="1920" height="999" alt="{780E4C01-4B2D-497C-A40F-6E79A4FC0784}" src="https://github.com/user-attachments/assets/4646858a-fb98-4a8f-b9be-558abec87f32" />
 <br><br>
-{13EE3B34-47D2-4F30-86D0-6888D2CB3DF5}.png
+<img width="1920" height="997" alt="{D0EA1094-0290-41EA-8C2B-F4E9990C05EA}" src="https://github.com/user-attachments/assets/e35c0310-887b-4c97-bce9-5a38b8a85333" />
 <br><br>
-{90A9A131-2CEC-4151-AD0C-606F5C66A3E5}.png
+<img width="1920" height="1010" alt="{C78B91D8-4380-48F8-9465-65BC03709437}" src="https://github.com/user-attachments/assets/dccfe513-42f0-48d4-8a29-072cf9ae29d8" />
 <br><br>
-{7903FFC7-9EC6-4FED-8C78-E9246523E340}.png
+<img width="1920" height="999" alt="{C6A25E20-8A90-45B9-9BDE-1F4B79595DB8}" src="https://github.com/user-attachments/assets/5bf40789-716c-433a-a178-b9d58e39a687" />
 <br><br>
-{8CE5A6F5-DA45-48FB-8F48-E1A3015481C7}.png
+<img width="1920" height="996" alt="{DC40C656-1C9C-4BFF-95A1-E76CF8E8461E}" src="https://github.com/user-attachments/assets/de9781b5-e525-47b5-a7c2-646b3971a74e" />
 <br><br>
-{72304807-B6B6-4A0A-B553-084506C3407E}.png
+<img width="1920" height="997" alt="{C8372634-19B7-4DB8-9A20-E7AB7A23B78F}" src="https://github.com/user-attachments/assets/78b11d4d-ca52-441f-959d-e6001e6b46a2" />
+
 
 
 
