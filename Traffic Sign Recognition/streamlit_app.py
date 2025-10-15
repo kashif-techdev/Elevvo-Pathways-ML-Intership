@@ -16,6 +16,15 @@ from models import TrafficSignModelBuilder
 from training_evaluation import TrafficSignTrainer
 import io
 import base64
+import os
+
+# Suppress TensorFlow warnings
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+tf.get_logger().setLevel('ERROR')
+import warnings
+warnings.filterwarnings('ignore', category=FutureWarning)
+warnings.filterwarnings('ignore', category=UserWarning)
 
 # Set page config
 st.set_page_config(
@@ -101,10 +110,13 @@ class TrafficSignApp:
     
     def predict_image(self, image):
         """Predict traffic sign from image"""
-        if self.model is None:
+        if 'loaded_model' not in st.session_state or st.session_state.get('model_loaded', False) == False:
             return None, "No model loaded"
         
         try:
+            # Get model from session state
+            model = st.session_state['loaded_model']
+            
             # Preprocess image
             img_processed = self.preprocess_uploaded_image(image)
             
@@ -112,7 +124,7 @@ class TrafficSignApp:
             img_batch = np.expand_dims(img_processed, axis=0)
             
             # Make prediction
-            predictions = self.model.predict(img_batch, verbose=0)
+            predictions = model.predict(img_batch, verbose=0)
             
             # Get top 5 predictions
             top5_indices = np.argsort(predictions[0])[-5:][::-1]
@@ -135,13 +147,20 @@ class TrafficSignApp:
     def load_model(self, model_path):
         """Load a pre-trained model"""
         try:
-            self.model = tf.keras.models.load_model(model_path)
+            model = tf.keras.models.load_model(model_path)
+            # Store model in session state
+            st.session_state['loaded_model'] = model
+            st.session_state['model_loaded'] = True
             return True, "Model loaded successfully"
         except Exception as e:
             return False, f"Error loading model: {str(e)}"
     
     def run(self):
         """Run the Streamlit app"""
+        
+        # Initialize session state
+        if 'model_loaded' not in st.session_state:
+            st.session_state['model_loaded'] = False
         
         # Header
         st.markdown('<h1 class="main-header">🚦 Traffic Sign Recognition System</h1>', 
@@ -159,7 +178,14 @@ class TrafficSignApp:
         
         # Load model button
         if st.sidebar.button("🔄 Load Model", help="Load the selected model"):
-            model_path = f"models/{model_option.lower().replace(' ', '_')}_best.h5"
+            # Map model names to actual file names
+            model_mapping = {
+                "Custom CNN": "custom_cnn_best.h5",
+                "MobileNetV2": "mobilenet_best.h5",
+                "VGG16": "vgg16_best.h5",
+                "ResNet50": "resnet50_best.h5"
+            }
+            model_path = f"models/{model_mapping[model_option]}"
             success, message = self.load_model(model_path)
             if success:
                 st.sidebar.success(message)
@@ -167,7 +193,7 @@ class TrafficSignApp:
                 st.sidebar.error(message)
         
         # Model info
-        if self.model is not None:
+        if st.session_state.get('model_loaded', False):
             st.sidebar.success("✅ Model Loaded")
             st.sidebar.info(f"Model: {model_option}")
         else:
@@ -189,11 +215,12 @@ class TrafficSignApp:
             if uploaded_file is not None:
                 # Display uploaded image
                 image = Image.open(uploaded_file)
-                st.image(image, caption="Uploaded Image", use_column_width=True)
+                st.image(image, caption="Uploaded Image", use_container_width=True)
                 
                 # Predict button
-                if st.button("🔮 Predict Traffic Sign", disabled=self.model is None):
-                    if self.model is None:
+                model_loaded = st.session_state.get('model_loaded', False)
+                if st.button("🔮 Predict Traffic Sign", disabled=not model_loaded):
+                    if not model_loaded:
                         st.error("Please load a model first!")
                     else:
                         with st.spinner("Analyzing image..."):
@@ -206,6 +233,11 @@ class TrafficSignApp:
                             
                             # Display results
                             st.subheader("🎯 Prediction Results")
+                            
+                            # Add warning for low confidence
+                            max_confidence = max([r['confidence'] for r in results])
+                            if max_confidence < 0.1:
+                                st.warning("⚠️ **Low Confidence Warning**: The model shows very low confidence in its predictions. This is expected since the model was trained on sample data, not real traffic sign images.")
                             
                             for i, result in enumerate(results):
                                 confidence = result['confidence']
@@ -227,11 +259,11 @@ class TrafficSignApp:
                                     color = "gray"
                                     icon = "🔸"
                                 
-                                # Display prediction
+                                # Display prediction with better formatting
                                 st.markdown(f"""
                                 <div class="prediction-box" style="border-color: {color};">
                                     <h4>{icon} Rank {i+1}: {class_name}</h4>
-                                    <p><strong>Confidence:</strong> {confidence:.3f} ({confidence*100:.1f}%)</p>
+                                    <p><strong>Confidence:</strong> {confidence:.4f} ({confidence*100:.2f}%)</p>
                                     <p><strong>Class ID:</strong> {class_id}</p>
                                 </div>
                                 """, unsafe_allow_html=True)
@@ -271,16 +303,16 @@ class TrafficSignApp:
             
             with col1:
                 st.image("https://via.placeholder.com/150x150/FF0000/FFFFFF?text=STOP", 
-                        caption="Stop Sign", use_column_width=True)
+                        caption="Stop Sign", use_container_width=True)
             with col2:
                 st.image("https://via.placeholder.com/150x150/00FF00/FFFFFF?text=30", 
-                        caption="Speed Limit", use_column_width=True)
+                        caption="Speed Limit", use_container_width=True)
             with col3:
                 st.image("https://via.placeholder.com/150x150/0000FF/FFFFFF?text=YIELD", 
-                        caption="Yield Sign", use_column_width=True)
+                        caption="Yield Sign", use_container_width=True)
             with col4:
                 st.image("https://via.placeholder.com/150x150/FFFF00/000000?text=NO+ENTRY", 
-                        caption="No Entry", use_column_width=True)
+                        caption="No Entry", use_container_width=True)
             
             # Class distribution
             st.subheader("📊 Class Distribution")
@@ -371,6 +403,10 @@ class TrafficSignApp:
             ## 🚦 Traffic Sign Recognition System
             
             This is an advanced deep learning project for recognizing traffic signs using various CNN architectures.
+            
+            ### ⚠️ Current Status
+            **Note**: The models in this demo are trained on sample/random data for demonstration purposes. 
+            For real traffic sign recognition, the models need to be trained on the actual GTSRB dataset.
             
             ### 🎯 Features
             - **Multiple Model Architectures**: Custom CNN, MobileNetV2, VGG16, ResNet50

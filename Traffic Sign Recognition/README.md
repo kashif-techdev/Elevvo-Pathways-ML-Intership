@@ -7,6 +7,28 @@
 
 A comprehensive deep learning project for traffic sign recognition using multiple CNN architectures, transfer learning, and advanced evaluation techniques.
 
+## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8+
+- pip package manager
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/traffic-sign-recognition.git
+cd traffic-sign-recognition
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+streamlit run streamlit_app.py
+```
+
+### Demo
+The app will be available at `http://localhost:8501`
+
 ## 🎯 Project Overview
 
 This project implements a state-of-the-art traffic sign recognition system that can classify 43 different types of German traffic signs with high accuracy. The system includes:
